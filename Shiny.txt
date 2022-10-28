@@ -1,0 +1,328 @@
+-- DROP SCHEMA "Lab1";
+
+CREATE SCHEMA "Lab1" AUTHORIZATION user20;
+-- "Lab1".material_type definition
+
+-- Drop table
+
+-- DROP TABLE "Lab1".material_type;
+
+CREATE TABLE "Lab1".material_type (
+	id_mat_type int4 NOT NULL,
+	title text NULL,
+	defected_percent float4 NULL,
+	CONSTRAINT material_type_pk PRIMARY KEY (id_mat_type)
+);
+
+-- Permissions
+
+ALTER TABLE "Lab1".material_type OWNER TO user20;
+GRANT ALL ON TABLE "Lab1".material_type TO user20;
+
+
+-- "Lab1".supplier definition
+
+-- Drop table
+
+-- DROP TABLE "Lab1".supplier;
+
+CREATE TABLE "Lab1".supplier (
+	id_sup int4 NOT NULL,
+	title text NULL,
+	inn varchar NULL,
+	start_date date NULL,
+	quality_rating int4 NULL,
+	supplier_type varchar NULL,
+	CONSTRAINT supplier_pk PRIMARY KEY (id_sup)
+);
+
+-- Permissions
+
+ALTER TABLE "Lab1".supplier OWNER TO user20;
+GRANT ALL ON TABLE "Lab1".supplier TO user20;
+
+
+-- "Lab1".product_type definition
+
+-- Drop table
+
+-- DROP TABLE "Lab1".product_type;
+
+CREATE TABLE "Lab1".product_type (
+	id_pro_type int4 NOT NULL,
+	title text NULL,
+	defected_percent float4 NULL,
+	CONSTRAINT product_type_pk PRIMARY KEY (id_pro_type)
+);
+
+-- Permissions
+
+ALTER TABLE "Lab1".product_type OWNER TO user20;
+GRANT ALL ON TABLE "Lab1".product_type TO user20;
+
+
+-- "Lab1".material definition
+
+-- Drop table
+
+-- DROP TABLE "Lab1".material;
+
+CREATE TABLE "Lab1".material (
+	id_material int4 NOT NULL,
+	title varchar NULL,
+	countin_pack int4 NULL,
+	countin_stock float4 NULL,
+	min_count varchar NULL,
+	description varchar NULL,
+	"cost" numeric NULL,
+	image varchar NULL,
+	id_material_type int4 NULL,
+	unit varchar NULL,
+	CONSTRAINT material_pk PRIMARY KEY (id_material),
+	CONSTRAINT material_fk FOREIGN KEY (id_material_type) REFERENCES "Lab1".material_type(id_mat_type)
+);
+
+-- Permissions
+
+ALTER TABLE "Lab1".material OWNER TO user20;
+GRANT ALL ON TABLE "Lab1".material TO user20;
+
+
+-- "Lab1".product definition
+
+-- Drop table
+
+-- DROP TABLE "Lab1".product;
+
+CREATE TABLE "Lab1".product (
+	id_product int4 NOT NULL,
+	title text NULL,
+	id_product_type int4 NULL,
+	article_number varchar NULL,
+	description varchar NULL,
+	image varchar NULL,
+	production_person_count int4 NULL,
+	production_workshop_number int4 NULL,
+	min_cost_for_agent numeric NULL,
+	CONSTRAINT product_pk PRIMARY KEY (id_product),
+	CONSTRAINT product_fk FOREIGN KEY (id_product_type) REFERENCES "Lab1".product_type(id_pro_type)
+);
+
+-- Permissions
+
+ALTER TABLE "Lab1".product OWNER TO user20;
+GRANT ALL ON TABLE "Lab1".product TO user20;
+
+
+-- "Lab1".material_supplier definition
+
+-- Drop table
+
+-- DROP TABLE "Lab1".material_supplier;
+
+CREATE TABLE "Lab1".material_supplier (
+	id_mat int4 NOT NULL,
+	id_sup int4 NOT NULL,
+	CONSTRAINT material_supplier_pk PRIMARY KEY (id_mat, id_sup),
+	CONSTRAINT material_supplie1r_fk FOREIGN KEY (id_sup) REFERENCES "Lab1".supplier(id_sup),
+	CONSTRAINT material_supplier_fk FOREIGN KEY (id_mat) REFERENCES "Lab1".material(id_material)
+);
+
+-- Permissions
+
+ALTER TABLE "Lab1".material_supplier OWNER TO user20;
+GRANT ALL ON TABLE "Lab1".material_supplier TO user20;
+
+
+-- "Lab1".product_cost_history definition
+
+-- Drop table
+
+-- DROP TABLE "Lab1".product_cost_history;
+
+CREATE TABLE "Lab1".product_cost_history (
+	id_pr_cost_his int4 NOT NULL,
+	id_product int4 NULL,
+	change_date date NULL,
+	cost_value varchar NULL,
+	CONSTRAINT product_cost_history_pk PRIMARY KEY (id_pr_cost_his),
+	CONSTRAINT product_cost_history_fk FOREIGN KEY (id_product) REFERENCES "Lab1".product(id_product)
+);
+
+-- Permissions
+
+ALTER TABLE "Lab1".product_cost_history OWNER TO user20;
+GRANT ALL ON TABLE "Lab1".product_cost_history TO user20;
+
+
+-- "Lab1".product_material definition
+
+-- Drop table
+
+-- DROP TABLE "Lab1".product_material;
+
+CREATE TABLE "Lab1".product_material (
+	id_product int4 NOT NULL,
+	id_material int4 NOT NULL,
+	count float4 NULL,
+	CONSTRAINT product_material_pk PRIMARY KEY (id_product, id_material),
+	CONSTRAINT product_material_f2k FOREIGN KEY (id_material) REFERENCES "Lab1".material(id_material),
+	CONSTRAINT product_material_fk FOREIGN KEY (id_product) REFERENCES "Lab1".product(id_product)
+);
+
+-- Permissions
+
+ALTER TABLE "Lab1".product_material OWNER TO user20;
+GRANT ALL ON TABLE "Lab1".product_material TO user20;
+
+
+-- "Lab1".material_count_history definition
+
+-- Drop table
+
+-- DROP TABLE "Lab1".material_count_history;
+
+CREATE TABLE "Lab1".material_count_history (
+	id_mat_count_his int4 NOT NULL,
+	id_material int4 NULL,
+	change_date date NULL,
+	count_value float4 NULL,
+	CONSTRAINT material_count_history_pk PRIMARY KEY (id_mat_count_his),
+	CONSTRAINT material_count_history_fk FOREIGN KEY (id_material) REFERENCES "Lab1".material(id_material)
+);
+
+-- Permissions
+
+ALTER TABLE "Lab1".material_count_history OWNER TO user20;
+GRANT ALL ON TABLE "Lab1".material_count_history TO user20;
+
+
+-- "Lab1".agent definition
+
+-- Drop table
+
+-- DROP TABLE "Lab1".agent;
+
+CREATE TABLE "Lab1".agent (
+	id_agent int4 NOT NULL,
+	title varchar NULL,
+	CONSTRAINT agent_pk PRIMARY KEY (id_agent)
+);
+
+-- Permissions
+
+ALTER TABLE "Lab1".agent OWNER TO user20;
+GRANT ALL ON TABLE "Lab1".agent TO user20;
+
+
+-- "Lab1".agent_priority_history definition
+
+-- Drop table
+
+-- DROP TABLE "Lab1".agent_priority_history;
+
+CREATE TABLE "Lab1".agent_priority_history (
+	id_ag_pr_his int4 NOT NULL,
+	id_agent int4 NULL,
+	change_date date NULL,
+	priority_value int4 NULL,
+	CONSTRAINT agent_priority_history_pk PRIMARY KEY (id_ag_pr_his)
+);
+
+-- Permissions
+
+ALTER TABLE "Lab1".agent_priority_history OWNER TO user20;
+GRANT ALL ON TABLE "Lab1".agent_priority_history TO user20;
+
+
+-- "Lab1".shop definition
+
+-- Drop table
+
+-- DROP TABLE "Lab1".shop;
+
+CREATE TABLE "Lab1".shop (
+	id_shop int4 NOT NULL,
+	title text NULL,
+	address varchar NULL,
+	id_agent int4 NULL,
+	CONSTRAINT shop_pk PRIMARY KEY (id_shop)
+);
+
+-- Permissions
+
+ALTER TABLE "Lab1".shop OWNER TO user20;
+GRANT ALL ON TABLE "Lab1".shop TO user20;
+
+
+-- "Lab1".product_sale definition
+
+-- Drop table
+
+-- DROP TABLE "Lab1".product_sale;
+
+CREATE TABLE "Lab1".product_sale (
+	id_pro_sale int4 NOT NULL,
+	id_agent int4 NULL,
+	id_product int4 NULL,
+	sale_date date NULL,
+	product_count int4 NULL,
+	CONSTRAINT product_sale_pk PRIMARY KEY (id_pro_sale)
+);
+
+-- Permissions
+
+ALTER TABLE "Lab1".product_sale OWNER TO user20;
+GRANT ALL ON TABLE "Lab1".product_sale TO user20;
+
+
+-- "Lab1".agent_type definition
+
+-- Drop table
+
+-- DROP TABLE "Lab1".agent_type;
+
+CREATE TABLE "Lab1".agent_type (
+	id_agent_type int4 NOT NULL,
+	title varchar NULL,
+	image varchar NULL,
+	CONSTRAINT agent_type_pk PRIMARY KEY (id_agent_type)
+);
+
+-- Permissions
+
+ALTER TABLE "Lab1".agent_type OWNER TO user20;
+GRANT ALL ON TABLE "Lab1".agent_type TO user20;
+
+
+-- "Lab1".agent foreign keys
+
+ALTER TABLE "Lab1".agent ADD CONSTRAINT agent_fk FOREIGN KEY (id_agent) REFERENCES "Lab1".agent_type(id_agent_type);
+
+
+-- "Lab1".agent_priority_history foreign keys
+
+ALTER TABLE "Lab1".agent_priority_history ADD CONSTRAINT agent_priority_history_fk FOREIGN KEY (id_agent) REFERENCES "Lab1".agent(id_agent);
+
+
+-- "Lab1".shop foreign keys
+
+ALTER TABLE "Lab1".shop ADD CONSTRAINT shop_fk FOREIGN KEY (id_agent) REFERENCES "Lab1".agent(id_agent);
+
+
+-- "Lab1".product_sale foreign keys
+
+ALTER TABLE "Lab1".product_sale ADD CONSTRAINT product_sale_1fk FOREIGN KEY (id_product) REFERENCES "Lab1".product(id_product);
+ALTER TABLE "Lab1".product_sale ADD CONSTRAINT product_sale_fk FOREIGN KEY (id_agent) REFERENCES "Lab1".agent(id_agent);
+
+
+-- "Lab1".agent_type foreign keys
+
+ALTER TABLE "Lab1".agent_type ADD CONSTRAINT agent_type_fk FOREIGN KEY (id_agent_type) REFERENCES "Lab1".agent(id_agent);
+
+
+
+
+-- Permissions
+
+GRANT ALL ON SCHEMA "Lab1" TO user20;
